@@ -7,15 +7,16 @@ interface TaskProps {
   dueDate: string;
   isCompleted: boolean;
   onDelete: (id: string) => void;
+  onToggle: (id: string) => void;
 }
 
 
 
-export default function TaskCard({ id, title, subject, dueDate, isCompleted, onDelete }: TaskProps) {
+export default function TaskCard({ id, title, subject, dueDate, isCompleted, onDelete, onToggle }: TaskProps) {
   return (
     <div className="bg-zinc-950 border border-zinc-800 p-4 rounded-lg flex items-center justify-between mb-3 shadow-sm hover:border-purple-500/50 transition group">
       <div className="flex items-center gap-4">
-        <button 
+        <button onClick={() => onToggle(id)}
           className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition
             ${isCompleted ? 'bg-purple-600 border-purple-600' : 'border-zinc-600 hover:border-purple-400'}`}
         >

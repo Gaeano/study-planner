@@ -53,8 +53,22 @@ const handleDeleteTask = (idToDelete: string) => {
     setTasks(updatedTasks);
     
     localStorage.setItem("planner_tasks", JSON.stringify(updatedTasks));
-  };
+};
 
+const handleToggleComplete = (idToToggle: string) => {
+    const completedTasks = localStorage.getItem("planner_tasks");
+    if (completedTasks){
+        const updatedTasks = tasks.map((task) => {
+            if (task.id === idToToggle){
+                return {...task, isCompleted: !task.isCompleted};
+            }
+            return task;
+        });
+        setTasks(updatedTasks);
+        localStorage.setItem("planner_tasks", JSON.stringify(updatedTasks));
+        localStorage.setItem("planner_completed", JSON.stringify(updatedTasks.filter(task => task.isCompleted)));
+    }
+};
 
 return (
     <div className="min-h-screen flex bg-black text-white">
@@ -99,6 +113,7 @@ return (
                     dueDate={task.dueDate}
                     isCompleted={task.isCompleted}
                     onDelete={handleDeleteTask}
+                    ToggleComplete={handleToggleComplete}
                   />
                 ))
               )}

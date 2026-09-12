@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import TaskForm from './taskForm';
-import TaskCard from './taskCard';
+import TaskForm from '../Layout_Components/taskForm';
+import TaskCard from '../Layout_Components/taskCard';
+import Sidebar from '../Layout_Components/sidebar';
 
 interface Task {
     id: string;
@@ -17,7 +18,6 @@ export default function TasksPage() {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [isFormOpen, setFormOpen] = useState(false);
 
-    // Load saved tasks when the page opens
     useEffect(() => {
         const savedTasks = localStorage.getItem("planner_tasks");
         if (savedTasks) {
@@ -59,21 +59,7 @@ export default function TasksPage() {
 
     return (
         <div className="min-h-screen flex bg-black text-white relative">
-            <aside className="w-64 bg-zinc-950 border-r border-zinc-800 p-6 flex flex-col gap-6">
-                <h2 className="text-xl font-bold text-purple-600">Mini Study Planner</h2>
-                <nav className="flex flex-col gap-4">
-                    <Link href="/dashboard" className="font-medium text-zinc-400 hover:text-purple-400 transition">
-                        Dashboard
-                    </Link>
-                    <Link href="/tasks" className="font-medium text-purple-500">
-                        All Tasks
-                    </Link>
-                    <Link href="/schedule" className="font-medium text-zinc-400 hover:text-purple-400 transition">
-                        Schedule
-                    </Link>
-                </nav>
-            </aside>
-
+           <Sidebar />
             <main className="flex-1 p-10 flex flex-col items-center">
                 
                 <header className="w-full max-w-2xl flex flex-col items-center text-center mb-10 gap-6">

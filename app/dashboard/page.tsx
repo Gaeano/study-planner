@@ -1,8 +1,8 @@
 'use client';
-import Link from 'next/link';
 import {useState, useEffect} from 'react';
-import TaskForm from '../tasks/taskForm';
-import TaskCard from '../tasks/taskCard';
+import TaskForm from '../Layout_Components/taskForm';
+import TaskCard from '../Layout_Components/taskCard';
+import Sidebar from '../Layout_Components/sidebar';
 
 interface Task{
     id: string;
@@ -11,10 +11,10 @@ interface Task{
     dueDate: string;
     isCompleted: boolean;
 };
-
+    
 export default function Dashboard() {
 
-const [username, setUsername] = useState<String>('');
+const [username, setUsername] = useState<string>('');
 const [isFormOpen, setFormOpen] = useState(false);
 const [tasks, setTasks] = useState<Task[]>([]);
 const [isCompleted, setCompleted] = useState(false);
@@ -72,20 +72,7 @@ const handleToggleComplete = (idToToggle: string) => {
 
 return (
     <div className="min-h-screen flex bg-black text-white">
-    <aside className="w-64 bg-zinc-950 border-r border-zinc-800 p-6 flex flex-col gap-6">
-        <h2 className="text-xl font-bold text-purple-600">Mini Study Planner</h2>
-        <nav className="flex flex-col gap-4">
-        <Link href="/dashboard" className="font-medium text-purple-500">
-            Dashboard
-        </Link>
-        <Link href="/tasks" className="font-medium text-zinc-400 hover:text-purple-400 transition">
-            All Tasks
-        </Link>
-        <Link href="/schedule" className="font-medium text-zinc-400 hover:text-purple-400 transition">
-            Schedule
-        </Link>
-        </nav>
-    </aside>
+    <Sidebar />
 
     <main className="flex-1 p-10">
         <header className="flex justify-between items-center mb-8">
@@ -113,7 +100,7 @@ return (
                     dueDate={task.dueDate}
                     isCompleted={task.isCompleted}
                     onDelete={handleDeleteTask}
-                    ToggleComplete={handleToggleComplete}
+                    onToggle={handleToggleComplete}
                   />
                 ))
               )}

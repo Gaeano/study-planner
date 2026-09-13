@@ -60,7 +60,7 @@ export default function TasksPage() {
     return (
         <div className="min-h-screen flex bg-black text-white relative">
            <Sidebar />
-            <main className="flex-1 p-10 flex flex-col items-center">
+            <main className="flex-1 p-10 flex flex-col items-center animate-page-transition">
                 
                 <header className="w-full max-w-2xl flex flex-col items-center text-center mb-10 gap-6">
                     <h1 className="text-4xl font-bold">Tasks</h1>

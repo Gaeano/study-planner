@@ -59,10 +59,10 @@ export default function PomodoroPage() {
   };
 
   return (
-    <div className="min-h-screen flex bg-black text-white relative">
+    <div className="min-h-screen flex bg-black text-white relative ">
       <Sidebar />
 
-      <main className="flex-1 p-10 flex flex-col items-center justify-start">
+      <main className="flex-1 p-10 flex flex-col items-center justify-start animate-page-transition">
         <header className="w-full max-w-md flex justify-center items-center mb-8">
             <h1 className="text-3xl font-bold">Focus Timer</h1>
         </header>

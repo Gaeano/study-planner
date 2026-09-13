@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface TaskFormProps {
   onClose: () => void;
@@ -11,6 +11,23 @@ export default function TaskForm({ onClose, onAddTask }: TaskFormProps) {
   const [title, setTitle] = useState<string>('');
   const [subject, setSubject] = useState<string>('');
   const [dueDate, setDueDate] = useState<string>('');
+  const [isClosing, setIsClosing] = useState(false);
+  const closeTimer = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimer.current !== null) {
+        window.clearTimeout(closeTimer.current);
+      }
+    };
+  }, []);
+
+  const handleClose = () => {
+    if (isClosing) return;
+
+    setIsClosing(true);
+    closeTimer.current = window.setTimeout(onClose, 200);
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,15 +38,15 @@ export default function TaskForm({ onClose, onAddTask }: TaskFormProps) {
     setTitle('');
     setSubject('');
     setDueDate('');
-    onClose();
+    handleClose();
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-      <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-6 w-full max-w-md shadow-2xl">
+    <div className={`task-form-overlay fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 ${isClosing ? 'task-form-overlay-exit' : 'task-form-overlay-enter'}`}>
+      <div className={`task-form-panel bg-zinc-950 border border-zinc-800 rounded-xl p-6 w-full max-w-md shadow-2xl ${isClosing ? 'task-form-panel-exit' : 'task-form-panel-enter'}`}>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-white">Create New Task</h2>
-          <button onClick={onClose} className="text-zinc-500 hover:text-white transition">
+          <button onClick={handleClose} className="text-zinc-500 hover:text-white transition">
             ✕
           </button>
         </div>
@@ -72,7 +89,7 @@ export default function TaskForm({ onClose, onAddTask }: TaskFormProps) {
           <div className="flex justify-end gap-3 mt-4">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className="px-4 py-2 text-zinc-300 hover:bg-zinc-900 rounded-lg transition font-medium"
             >
               Cancel

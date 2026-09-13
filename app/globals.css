@@ -24,6 +24,51 @@
   100% { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes taskFormOverlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes taskFormOverlayOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes taskFormPanelIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes taskFormPanelOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(8px) scale(0.97); }
+}
+
+.task-form-overlay-enter {
+  animation: taskFormOverlayIn 200ms ease-out both;
+}
+
+.task-form-overlay-exit {
+  animation: taskFormOverlayOut 200ms ease-in both;
+}
+
+.task-form-panel-enter {
+  animation: taskFormPanelIn 200ms ease-out both;
+}
+
+.task-form-panel-exit {
+  animation: taskFormPanelOut 200ms ease-in both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .task-form-overlay-enter,
+  .task-form-overlay-exit,
+  .task-form-panel-enter,
+  .task-form-panel-exit {
+    animation-duration: 1ms;
+  }
+}
+
 .animate-page-transition {
   animation: fadeSlideIn 0.4s ease-out forwards;
 }

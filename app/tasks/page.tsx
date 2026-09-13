@@ -13,10 +13,13 @@ interface Task {
     dueDate: string;
     isCompleted: boolean;
 }
+// default sort is by due date ascending
+//if completed it will go to the bottom of the list
 
 export default function TasksPage() {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [isFormOpen, setFormOpen] = useState(false);
+    const [sortOption, setSortOption] = useState<string>('dueDateAsc');
 
     useEffect(() => {
         const savedTasks = localStorage.getItem("planner_tasks");
@@ -57,6 +60,27 @@ export default function TasksPage() {
         localStorage.setItem("planner_tasks", JSON.stringify(updatedTasks));
     };
 
+    const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setSortOption(event.target.value);
+    }
+
+     const sortedTasks = [...tasks].sort((a, b) => {
+        if (a.isCompleted && !b.isCompleted) return 1;
+        if (!a.isCompleted && b.isCompleted) return -1;
+
+        if (sortOption === "dueDateAsc") {
+            return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+        } else if (sortOption === "dueDateDesc"){
+            return new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
+        } else if (sortOption === 'subjectAsc'){
+            return a.subject.localeCompare(b.subject);
+        } else if (sortOption === 'subjectDesc'){
+            return b.subject.localeCompare(a.subject);
+        }
+
+        return 0;
+     });
+
     return (
         <div className="min-h-screen flex bg-black text-white relative">
            <Sidebar />
@@ -74,14 +98,23 @@ export default function TasksPage() {
                 </header>
 
                 <div className="w-full max-w-2xl bg-zinc-900 p-8 rounded-xl border border-zinc-800 min-h-[400px]">
+                    <label className="text-lg font-semibold mb-4 block">Sort by</label>
+                        <select onChange={handleSortChange} className="bg-zinc-800 text-zinc-100 p-3 rounded-md border border-zinc-700 mb-6 hover:border-purple-400 transition">
+                            <option value="dueDateAsc">Due Date (Ascending)</option>
+                            <option value="dueDateDesc">Due Date (Descending)</option>
+                            <option value="subjectAsc">Subject (A-Z)</option>
+                            <option value="subjectDesc">Subject (Z-A)</option>
+                        </select>
+
                     <div className="flex flex-col gap-3">
-                        {tasks.length === 0 ? (
+                        {sortedTasks .length === 0 ? (
                             <div className="text-center py-10">
                                 <p className="text-zinc-500 italic mb-2">Your task list is completely empty.</p>
                                 <p className="text-zinc-600 text-sm">Click the button above to start organizing your studies!</p>
                             </div>
                         ) : (
-                            tasks.map((task) => (
+
+                            sortedTasks.map((task) => (
                                 <TaskCard 
                                     key={task.id}
                                     id={task.id}

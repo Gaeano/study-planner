@@ -1,6 +1,5 @@
 'use client';
 import {useState, useEffect} from 'react';
-import TaskForm from '../Layout_Components/taskForm';
 import TaskCard from '../Layout_Components/taskCard';
 import Sidebar from '../Layout_Components/sidebar';
 
@@ -15,9 +14,9 @@ interface Task{
 export default function Dashboard() {
 
 const [username, setUsername] = useState<string>('');
-const [isFormOpen, setFormOpen] = useState(false);
 const [tasks, setTasks] = useState<Task[]>([]);
-const [isCompleted, setCompleted] = useState(false);
+const [sortOption, setSortOption] = useState('dueDateAsc');
+
 
 useEffect(() => {
     const storedName = localStorage.getItem("planner_username");
@@ -31,21 +30,6 @@ useEffect(() => {
     }
 }, []);
 
-const handleAddTask = (newTaskData: {title: string; subject: string; dueDate: string}) =>{
-    const newTask: Task ={
-        id: crypto.randomUUID(),
-        title: newTaskData.title,
-        subject: newTaskData.subject,
-        dueDate: newTaskData.dueDate,
-        isCompleted: false
-    };
-
-    const updatedTasks = [...tasks, newTask];
-
-    setTasks(updatedTasks);
-
-    localStorage.setItem("planner_tasks", JSON.stringify(updatedTasks));
-};
 
 const handleDeleteTask = (idToDelete: string) => {
     const updatedTasks = tasks.filter((task) => task.id !== idToDelete);
@@ -70,6 +54,23 @@ const handleToggleComplete = (idToToggle: string) => {
     }
 };
 
+ const sortedTasks = [...tasks].sort((a, b) => {
+        if (a.isCompleted && !b.isCompleted) return 1;
+        if (!a.isCompleted && b.isCompleted) return -1;
+
+        if (sortOption === "dueDateAsc") {
+            return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+        } else if (sortOption === "dueDateDesc"){
+            return new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
+        } else if (sortOption === 'subjectAsc'){
+            return a.title.localeCompare(b.title);
+        } else if (sortOption === 'subjectDesc'){
+            return b.title.localeCompare(a.title);
+        }
+
+        return 0;
+     });
+
 return (
     <div className="min-h-screen flex bg-black text-white">
     <Sidebar />
@@ -79,19 +80,16 @@ return (
         <h1 className="text-3xl font-bold">
             Welcome back{username ? `, ${username}` : ''}!
         </h1>  
-        <button onClick={() => setFormOpen(true)} className="bg-purple-600 text-white px-5 py-2 rounded-md font-medium hover:bg-purple-400 transition shadow-sm" >
-            + New Task
-        </button>
         </header>
 
         <div className="grid grid-cols-3 gap-6">
         <section className="col-span-2 bg-zinc-900 p-6 rounded-xl border border-zinc-800 min-h-[400px]">
             <h3 className="text-lg font-bold mb-4 text-purple-100">Active Tasks</h3>
             <div className="flex flex-col gap-2">
-              {tasks.length === 0 ? (
+              {sortedTasks.length === 0 ? (
                 <p className="text-zinc-500 italic">No active tasks. Click "+ New Task" to start planning!</p>
               ) : (
-                tasks.map((task) => (
+                sortedTasks.map((task) => (
                   <TaskCard 
                     key={task.id}
                     id={task.id}
@@ -115,11 +113,7 @@ return (
         </div>
     </main>
 
-    {isFormOpen && (
-        <TaskForm
-            onClose={() => setFormOpen(false)} 
-            onAddTask={handleAddTask} />
-    )};
+    
     </div>
 );
 }
